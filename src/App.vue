@@ -34,8 +34,8 @@ export default {
             icon: 'mdi-home',
             subItems: [
               {
-                title: 'Dashboard',
-                to: '/'
+                title: 'board',
+                to: '/board'
               },
               {
                 title: 'About',
