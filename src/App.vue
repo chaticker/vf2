@@ -1,14 +1,36 @@
 <template>
-  <div id="app">
-    title 수정
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link> |
-      <router-link to="/xxx">xxx</router-link>
-    </div>
-    <router-view/>
-  </div>
+  <v-app>
+    <v-app-bar app color="primary" dark>
+      <v-app-bar-nav-icon @click="drawer = !drawer" />
+      <site-title :title="title"></site-title>
+      <v-spacer/>
+    </v-app-bar>
+    <v-navigation-drawer app v-model="drawer">
+      <site-menu></site-menu>
+    </v-navigation-drawer>
+    <v-content>
+      <router-view/>
+    </v-content>
+    <site-footer :footer="footer"></site-footer>
+  </v-app>
 </template>
 
-<style>
-</style>
+<script>
+import SiteTitle from '@/views/site/title'
+import SiteFooter from '@/views/site/footer'
+import SiteMenu from '@/views/site/menu'
+export default {
+  components: { SiteTitle, SiteFooter, SiteMenu },
+  name: 'App',
+  data () {
+    return {
+      drawer: false,
+      items: [],
+      title: '나의 타이틀입니다',
+      footer: '푸터입니다'
+    }
+  },
+  mounted () {
+  }
+}
+</script>>
