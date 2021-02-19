@@ -14,14 +14,14 @@
           <div class="text-right font-italic caption">수정일: {{info.updatedAt.toDate().toLocaleString()}}</div>
         </v-alert>
       </v-card-text>
-      <v-card-text>
-        articles
-      </v-card-text>
+      <board-article :info="info" :document="document"></board-article>
     </v-card>
   </v-container>
 </template>
 <script>
+import BoardArticle from './article/index'
 export default {
+  components: { BoardArticle },
   props: ['document'],
   data () {
     return {
@@ -58,7 +58,7 @@ export default {
       this.$router.push(this.$route.path + '/board-write')
     },
     async articleWrite () {
-      this.$router.push({ path: this.$route.path + '/article-write', query: { articleId: 'new' } })
+      this.$router.push({ path: this.$route.path + '/article-write', query: { articleId: '' } })
     }
   }
 }
