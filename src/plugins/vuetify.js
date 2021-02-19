@@ -1,7 +1,20 @@
 import Vue from 'vue'
-import Vuetify from 'vuetify/lib/framework'
+import Vuetify, { VBtn, VIcon } from 'vuetify/lib'
 
-Vue.use(Vuetify)
+import en from 'vuetify/es5/locale/en'
+import ko from 'vuetify/es5/locale/ko'
 
-export default new Vuetify({
+Vue.use(Vuetify, {
+  components: {
+    VBtn,
+    VIcon
+  }
 })
+const VuetifyObj = new Vuetify({
+  lang: {
+    locales: { en, ko },
+    current: 'ko'
+  }
+})
+
+export default VuetifyObj
