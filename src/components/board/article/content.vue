@@ -21,10 +21,6 @@
             {{article.category}}
             <v-icon v-if="!category" right>mdi-menu-right</v-icon>
           </v-btn>
-          <template v-if="!$vuetify.breakpoint.xs">
-            <v-icon color="error" left v-if="newCheck(article.updatedAt)">mdi-fire</v-icon>
-            <span v-text="article.title"></span>
-          </template>
         </v-toolbar-title>
         <v-spacer/>
         <template v-if="(fireUser && fireUser.uid === article.uid) || (user && user.level === 0)">
@@ -34,12 +30,12 @@
         <v-btn @click="back" icon><v-icon>mdi-close</v-icon></v-btn>
       </v-toolbar>
       <v-divider/>
-      <v-card-title v-if="$vuetify.breakpoint.xs">
+      <v-card-title>
         <v-icon color="error" left v-if="newCheck(article.updatedAt)">mdi-fire</v-icon>
         <span v-text="article.title"></span>
       </v-card-title>
       <v-card-text>
-        <viewer v-if="content" :initialValue="content"></viewer>
+        <viewer v-if="content" :initialValue="content" @load="onViewerLoad" :options="tuiOptions"></viewer>
         <v-container v-else>
           <v-row justify="center" align="center">
             <v-progress-circular indeterminate></v-progress-circular>
@@ -66,7 +62,6 @@
         <display-user :user="article.user"></display-user>
       </v-card-actions>
       <v-card-actions>
-        <!-- <v-chip small label outlined color="info" class="mr-2" v-for="tag in article.tags" :key="tag" v-text="tag"></v-chip> -->
         <v-spacer/>
         <v-sheet class="mr-4">
           <v-icon left :color="article.readCount ? 'info' : ''">mdi-eye</v-icon>
@@ -113,11 +108,17 @@ import DisplayTime from '@/components/display-time'
 import DisplayComment from '@/components/display-comment'
 import DisplayUser from '@/components/display-user'
 import newCheck from '@/util/newCheck'
+import addYoutubeIframe from '@/util/addYoutubeIframe'
 export default {
   components: { DisplayTime, DisplayComment, DisplayUser },
-  props: ['boardId', 'articleId', 'category', 'tag'],
+  props: ['boardId', 'articleId', 'action', 'category', 'tag'],
   data () {
     return {
+      tuiOptions: {
+        linkAttribute: {
+          target: '_blank'
+        }
+      },
       content: '',
       ref: null,
       unsubscribe: null,
@@ -144,6 +145,9 @@ export default {
       this.subscribe()
     },
     articleId () {
+      this.subscribe()
+    },
+    action () {
       this.subscribe()
     }
   },
@@ -237,6 +241,9 @@ export default {
       const us = this.$route.path.split('/')
       us.pop()
       this.$router.push({ path: us.join('/'), query: { category: this.article.category } })
+    },
+    onViewerLoad (v) {
+      addYoutubeIframe(v.preview.el, this.$vuetify.breakpoint)
     }
   }
 }
