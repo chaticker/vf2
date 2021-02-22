@@ -6,12 +6,17 @@
       <v-spacer/>
       <site-sign></site-sign>
     </v-app-bar>
-    <v-navigation-drawer app v-model="drawer" width="400">
-      <site-menu :items="site.menu"></site-menu>
+    <v-navigation-drawer
+      app
+      v-model="drawer"
+      :width="$store.state.editable ? 380 : null"
+      >
+      <!-- :width="$store.state.editable ? 380 : null" -->
+      <site-menu :items="site.menu" @close="drawer=false"></site-menu>
     </v-navigation-drawer>
-    <v-content>
+    <v-main>
       <router-view/>
-    </v-content>
+    </v-main>
     <site-footer :footer="site.footer"></site-footer>
   </v-app>
 </template>
@@ -34,8 +39,8 @@ export default {
             icon: 'mdi-home',
             subItems: [
               {
-                title: 'board',
-                to: '/board'
+                title: 'Dashboard',
+                to: '/'
               },
               {
                 title: 'About',
@@ -79,3 +84,8 @@ export default {
   }
 }
 </script>
+<style>
+.white-space {
+  white-space: pre-wrap;
+}
+</style>
