@@ -8,114 +8,11 @@
     </v-alert>
   </v-container>
   <v-container fluid v-else class="pa-0">
-    <template v-for="(item, i) in items">
-      <template v-if="$store.state.boardTypeList">
-        <v-list-item three-line :key="item.id" :to="category ? `${boardId}/${item.id}?category=${category}`:`${boardId}/${item.id}`">
-          <v-list-item-content>
-            <v-list-item-title>
-              <v-btn
-                v-if="!$vuetify.breakpoint.xs && category != item.category"
-                color="info"
-                depressed
-                small
-                class="mr-4"
-                :to="`${$route.path}?category=${item.category}`"
-              >
-                {{item.category}}
-                <v-icon right>mdi-menu-right</v-icon>
-              </v-btn>
-              <template>
-                <v-icon color="error" left v-if="newCheck(item.updatedAt)">mdi-fire</v-icon>
-                <span v-text="item.title"></span>
-                <v-icon right v-if="item.images && item.images.length">mdi-image</v-icon>
-              </template>
-            </v-list-item-title>
-            <v-list-item-subtitle class="d-flex justify-space-between align-center">
-              <display-time :time="item.createdAt"></display-time>
-              <display-user :user="item.user" :size="'small'"></display-user>
-            </v-list-item-subtitle>
-          </v-list-item-content>
-          <v-list-item-action>
-            <v-sheet class="d-flex justify-space-between">
-              <v-icon left :color="item.readCount ? 'info' : ''">mdi-eye</v-icon>
-              <span class="body-2">{{item.readCount}}</span>
-            </v-sheet>
-            <v-sheet class="d-flex justify-space-between">
-              <v-icon left :color="item.commentCount ? 'info' : ''">mdi-comment</v-icon>
-              <span class="body-2">{{item.commentCount}}</span>
-            </v-sheet>
-            <v-sheet class="d-flex justify-space-between">
-              <v-icon left :color="liked(item) ? 'success' : ''">mdi-thumb-up</v-icon>
-              <span class="body-2">{{item.likeCount}}</span>
-            </v-sheet>
-          </v-list-item-action>
-        </v-list-item>
-        <v-divider v-if="i < items.length - 1" :key="i"/>
-      </template>
-      <template v-else>
-        <v-card :key="item.id" :class="$vuetify.breakpoint.xs ? '' : 'ma-4'" :flat="$vuetify.breakpoint.xs">
-          <v-subheader>
-            <v-btn
-              v-if="category != item.category"
-              color="info"
-              depressed
-              small
-              class="mr-4"
-              :to="`${$route.path}?category=${item.category}`"
-            >
-              {{item.category}}
-              <v-icon right>mdi-menu-right</v-icon>
-            </v-btn>
-            <display-time :time="item.createdAt"></display-time>
-            <v-spacer/>
-            <v-btn icon v-if="fireUser && fireUser.uid === item.uid" :to="`${boardId}/${item.id}?action=write`"><v-icon>mdi-pencil</v-icon></v-btn>
-          </v-subheader>
-
-          <v-card color="transparent" flat :to="category ? `${boardId}/${item.id}?category=${category}`:`${boardId}/${item.id}`">
-            <v-card-title>
-              <v-icon color="error" left v-if="newCheck(item.updatedAt)">mdi-fire</v-icon>
-              {{item.title}}
-            </v-card-title>
-            <v-card-text>
-              <viewer v-if="item.summary" :initialValue="item.summary" @load="onViewerLoad" :options="tuiOptions"></viewer>
-              <v-container v-else>
-                <v-row justify="center" align="center">
-                  <v-progress-circular indeterminate></v-progress-circular>
-                </v-row>
-              </v-container>
-            </v-card-text>
-            <v-card-actions class="d-flex justify-center">
-              <v-btn text color="primary"><v-icon left>mdi-dots-horizontal</v-icon>더보기</v-btn>
-            </v-card-actions>
-          </v-card>
-          <v-card-actions>
-            <v-spacer/>
-            <display-user :user="item.user"></display-user>
-          </v-card-actions>
-          <v-card-actions>
-            <v-spacer/>
-            <v-sheet class="mr-4">
-              <v-icon left :color="item.readCount ? 'info' : ''">mdi-eye</v-icon>
-              <span class="body-2">{{item.readCount}}</span>
-            </v-sheet>
-            <v-sheet class="mr-4">
-              <v-icon left :color="item.commentCount ? 'info' : ''">mdi-comment</v-icon>
-              <span class="body-2">{{item.commentCount}}</span>
-            </v-sheet>
-            <v-sheet class="mr-0">
-              <v-icon left :color="liked(item) ? 'success' : ''">mdi-thumb-up</v-icon>
-              <span class="body-2">{{item.likeCount}}</span>
-            </v-sheet>
-          </v-card-actions>
-          <v-card-text class="mb-0">
-            <v-row justify="end">
-              <v-chip small label outlined color="info" class="mr-2 mb-2" v-for="tag in item.tags" :key="tag" v-text="tag"></v-chip>
-            </v-row>
-          </v-card-text>
-        </v-card>
-        <v-divider v-if="i < items.length - 1 && $vuetify.breakpoint.xs" :key="i"/>
-      </template>
+    <template v-if="board.type === '일반'">
+      <list-compact v-if="$store.state.boardTypeList" :items="items" :boardId="boardId" :category="category"/>
+      <list-normal v-else :items="items" :boardId="boardId" :category="category"/>
     </template>
+    <list-gallery v-else :items="items" :boardId="boardId" :category="category"/>
     <v-list-item v-if="lastDoc && items.length < board.count">
       <v-btn
         @click="more"
@@ -131,22 +28,15 @@
 </template>
 <script>
 import { last } from 'lodash'
-import DisplayTime from '@/components/display-time'
-import DisplayUser from '@/components/display-user'
-import getSummary from '@/util/getSummary'
-import newCheck from '@/util/newCheck'
-import addYoutubeIframe from '@/util/addYoutubeIframe'
+import ListCompact from './components/list-compact'
+import ListNormal from './components/list-normal'
+import ListGallery from './components/list-gallery'
 const LIMIT = 5
 export default {
-  components: { DisplayTime, DisplayUser },
+  components: { ListCompact, ListNormal, ListGallery },
   props: ['board', 'boardId', 'category', 'tag'],
   data () {
     return {
-      tuiOptions: {
-        linkAttribute: {
-          target: '_blank'
-        }
-      },
       items: [],
       unsubscribe: null,
       ref: null,
@@ -154,8 +44,6 @@ export default {
       order: 'createdAt',
       sort: 'desc',
       loading: false,
-      getSummary,
-      newCheck,
       loaded: false
     }
   },
@@ -204,9 +92,12 @@ export default {
           findItem.categories = item.categories
           findItem.tags = item.tags
           findItem.updatedAt = item.updatedAt.toDate()
+          findItem.important = item.important
         }
       })
       this.items.sort((before, after) => {
+        if (after.important > before.important) return 1
+        else if (after.important < before.important) return -1
         return Number(after.id) - Number(before.id)
       })
     },
@@ -217,13 +108,17 @@ export default {
         this.ref = this.$firebase.firestore()
           .collection('boards').doc(this.boardId)
           .collection('articles')
-          .orderBy(this.order, this.sort).limit(LIMIT)
+          .orderBy('important', 'desc')
+          .orderBy(this.order, this.sort)
+          .limit(LIMIT)
       } else {
         this.ref = this.$firebase.firestore()
           .collection('boards').doc(this.boardId)
           .collection('articles')
           .where('category', '==', this.category)
-          .orderBy(this.order, this.sort).limit(LIMIT)
+          .orderBy('important', 'desc')
+          .orderBy(this.order, this.sort)
+          .limit(LIMIT)
       }
       this.loaded = false
       this.unsubscribe = this.ref.onSnapshot(sn => {
@@ -234,9 +129,6 @@ export default {
         }
         this.snapshotToItems(sn)
       })
-    },
-    read (item) {
-      this.$router.push({ path: this.$route.path + '/' + item.id })
     },
     async more () {
       if (!this.lastDoc) throw Error('더이상 데이터가 없습니다')
@@ -251,13 +143,6 @@ export default {
     },
     onIntersect (entries, observer, isIntersecting) {
       if (isIntersecting) this.more()
-    },
-    liked (item) {
-      if (!this.fireUser) return false
-      return item.likeUids.includes(this.fireUser.uid)
-    },
-    onViewerLoad (v) {
-      addYoutubeIframe(v.preview.el, this.$vuetify.breakpoint)
     }
   }
 }

@@ -22,12 +22,12 @@
             hide-details/>
         </v-sheet>
         <template v-if="!$vuetify.breakpoint.xs">
-          <v-icon color="error" left v-if="newCheck(board.updatedAt)">mdi-fire</v-icon>
+          <v-icon color="error" left v-if="newCheck(board.updatedAt, 'days', 1)">mdi-fire</v-icon>
           <span v-text="board.title"></span>
         </template>
         <v-spacer/>
         <v-btn icon @click="dialog=true"><v-icon>mdi-information-outline</v-icon></v-btn>
-        <v-btn icon @click="$store.commit('toggleBoardType')">
+        <v-btn icon v-if="board.type === '일반'" @click="$store.commit('toggleBoardType')">
           <v-icon v-text="$store.state.boardTypeList ? 'mdi-format-list-bulleted' : 'mdi-text-box-outline'"></v-icon>
         </v-btn>
         <template v-if="user">
@@ -45,6 +45,16 @@
             <v-btn icon @click="dialog=false"><v-icon>mdi-close</v-icon></v-btn>
           </v-toolbar>
           <v-divider/>
+          <v-list-item>
+            <v-list-item-content>
+              <v-list-item-title>
+                게시판 유형
+              </v-list-item-title>
+              <v-list-item-subtitle>
+                {{board.type}}
+              </v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
           <v-list-item>
             <v-list-item-content>
               <v-list-item-title>
@@ -101,7 +111,7 @@
                 등록된 종류
               </v-list-item-title>
               <v-list-item-subtitle class="white-space">
-                <v-chip color="info" label small v-for="item in board.categories" :key="item" class="mt-2 mr-2" v-text="item"></v-chip>
+                <v-chip color="primary" label small outlined v-for="item in board.categories" :key="item" class="mt-2 mr-2" v-text="item"></v-chip>
               </v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
