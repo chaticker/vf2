@@ -1,11 +1,12 @@
 import Vue from 'vue'
-import Vuetify, { VBtn, VIcon } from 'vuetify/lib'
+import Vuetify, { VSnackbar, VBtn, VIcon } from 'vuetify/lib'
 
 import en from 'vuetify/es5/locale/en'
 import ko from 'vuetify/es5/locale/ko'
 
 Vue.use(Vuetify, {
   components: {
+    VSnackbar,
     VBtn,
     VIcon
   }
@@ -20,6 +21,7 @@ const theme = {
       success: '#26A699',
       warning: '#F29727',
       error: '#F24C3D'
+
       // success: '#2C4027'
     }
     // dark: {
