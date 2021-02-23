@@ -13,12 +13,12 @@
       :clipped="$vuetify.breakpoint.lgAndUp"
       :width="$store.state.editable ? 380 : null"
       >
-      <!-- :width="$store.state.editable ? 380 : null" -->
       <site-menu :items="site.menu" @close="drawer=false"></site-menu>
     </v-navigation-drawer>
     <v-main>
       <router-view/>
     </v-main>
+    <site-top :top="site.top"></site-top>
     <site-footer :footer="site.footer"></site-footer>
   </v-app>
 </template>
@@ -29,9 +29,10 @@ import SiteFooter from '@/views/site/footer'
 import SiteMenu from '@/views/site/menu'
 import SiteSign from '@/views/site/sign'
 import SiteSearch from '@/views/site/search'
+import SiteTop from '@/views/site/top'
 
 export default {
-  components: { SiteTitle, SiteFooter, SiteMenu, SiteSign, SiteSearch },
+  components: { SiteTitle, SiteFooter, SiteMenu, SiteSign, SiteSearch, SiteTop },
   name: 'App',
   data () {
     return {
@@ -54,7 +55,8 @@ export default {
           }
         ],
         title: '타이틀 로드중 ...',
-        footer: '바닥 로드중 ...'
+        footer: '바닥 로드중 ...',
+        top: ' '
       }
     }
   },
@@ -62,6 +64,14 @@ export default {
     this.subscribe()
   },
   methods: {
+    onScroll (e) {
+      if (typeof window === 'undefined') return
+      const top = window.pageYOffset || e.target.scrollTop || 0
+      this.fab = top > 20
+    },
+    toTop () {
+      this.$vuetify.goTo(0)
+    },
     subscribe () {
       this.$firebase.database().ref().child('site').on('value', (sn) => {
         const v = sn.val()
@@ -78,7 +88,5 @@ export default {
 }
 </script>
 <style>
-.white-space {
-  white-space: pre-wrap;
-}
+
 </style>

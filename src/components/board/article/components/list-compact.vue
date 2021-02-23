@@ -41,6 +41,7 @@ import DisplayTitle from '@/components/display-title'
 import DisplayCount from '@/components/display-count'
 import getSummary from '@/util/getSummary'
 import addYoutubeIframe from '@/util/addYoutubeIframe'
+
 export default {
   components: { DisplayTime, DisplayUser, DisplayTitle, DisplayCount },
   props: ['items', 'boardId', 'category'],
