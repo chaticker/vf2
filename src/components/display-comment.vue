@@ -23,7 +23,7 @@
         <v-list-item-content>
           <v-list-item-subtitle v-if="!item.edit" class="black--text white-space">
             <v-icon color="primary" v-for="i in replyDepth(item)" :key="i">mdi-subdirectory-arrow-right</v-icon>
-            <v-icon color="error" left v-if="newCheck(item.updatedAt, 'minutes', 10)">mdi-fire</v-icon> {{item.comment}}
+            <v-icon color="error" left v-if="newCheck(item.updatedAt, 'minutes', 10)">mdi-creation</v-icon> {{item.comment}}
             <!-- <span>{{item.no}}</span> 디버깅용 -->
           </v-list-item-subtitle>
           <v-list-item-subtitle v-else>
@@ -137,6 +137,7 @@ import DisplayTime from '@/components/display-time'
 import DisplayUser from '@/components/display-user'
 import newCheck from '@/util/newCheck'
 const LIMIT = 5
+
 export default {
   components: { DisplayTime, DisplayUser },
   props: ['article', 'docRef'],
@@ -223,6 +224,7 @@ export default {
       if (this.article.commentCount > 100) throw Error('댓글 개수 허용치를 넘었습니다')
       if (!this.comment) throw Error('내용을 작성해야 합니다')
       if (this.comment.length > 300) throw Error('문자 허용치를 넘었습니다')
+
       const rs = this.items.filter(el => el.no % 10000 === 0)
       const doc = {
         createdAt: new Date(),
@@ -250,6 +252,7 @@ export default {
       const depth = this.replyDepth(item)
       if (depth > 1) throw Error('대대댓글은 허용하지 않습니다')
       let no = 0
+
       if (!depth) {
         const max = item.no + 10000
         const rs = this.items.filter(el => {
@@ -265,6 +268,7 @@ export default {
         if (rs.length) no = last(rs).no + 1
         else no = item.no + 1
       }
+
       const doc = {
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -286,6 +290,7 @@ export default {
         item.replyEdit = false
         item.replyComment = ''
       }
+
       const findItem = this.items.find(el => id === el.id)
       if (findItem) return
       doc.id = id

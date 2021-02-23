@@ -22,7 +22,7 @@
             hide-details/>
         </v-sheet>
         <template v-if="!$vuetify.breakpoint.xs">
-          <v-icon color="error" left v-if="newCheck(board.updatedAt, 'days', 1)">mdi-fire</v-icon>
+          <v-icon color="error" left v-if="newCheck(board.updatedAt, 'days', 1)">mdi-creation</v-icon>
           <span v-text="board.title"></span>
         </template>
         <v-spacer/>
@@ -36,7 +36,7 @@
       </v-toolbar>
       <v-divider/>
       <board-article :boardId="boardId" :board="board" :category="category"></board-article>
-      <v-dialog v-model="dialog" max-width="300">
+      <v-dialog v-model="dialog" max-width="400">
         <v-card>
           <v-toolbar color="transparent" dense flat>
             <v-toolbar-title>게시판 정보</v-toolbar-title>
@@ -148,6 +148,7 @@ import BoardArticle from './article/index'
 import DisplayTime from '@/components/display-time'
 import DisplayUser from '@/components/display-user'
 import newCheck from '@/util/newCheck'
+
 export default {
   components: { BoardArticle, DisplayTime, DisplayUser },
   props: ['boardId', 'category', 'tag'],

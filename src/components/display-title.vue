@@ -23,13 +23,14 @@
         <v-icon v-else left color="warning">mdi-alert-circle</v-icon>
       </template>
     </template>
-    <v-icon color="error" left v-if="!item.important ? newCheck(item.updatedAt, 'hours', 1) : newCheck(item.updatedAt, 'days', 1)">mdi-fire</v-icon>
+    <v-icon color="error" left v-if="!item.important ? newCheck(item.updatedAt, 'hours', 1) : newCheck(item.updatedAt, 'days', 1)">mdi-creation</v-icon>
     <v-icon color="accent" left v-if="item.images && item.images.length">mdi-image</v-icon>
     <span v-text="item.title"></span>
   </div>
 </template>
 <script>
 import newCheck from '@/util/newCheck'
+
 export default {
   props: ['item'],
   data () {

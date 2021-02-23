@@ -38,7 +38,8 @@
             <v-subheader>등록된 종류</v-subheader>
             <v-card-text>
               <v-chip
-                color="info"
+                color="primary"
+                outlined
                 label
                 small
                 v-for="(item, i) in form.categories"
@@ -102,6 +103,7 @@
   </v-container>
 </template>
 <script>
+import setMeta from '@/util/setMeta'
 export default {
   props: ['boardId', 'action'],
   data () {
@@ -138,6 +140,11 @@ export default {
   },
   methods: {
     async fetch () {
+      setMeta({
+        title: '게시판 수정',
+        description: '게시판을 만들거나 수정합니다',
+        image: '/logo.png'
+      })
       this.ref = this.$firebase.firestore().collection('boards').doc(this.boardId)
       this.loaded = false
       const doc = await this.ref.get()

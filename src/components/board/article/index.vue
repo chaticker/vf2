@@ -31,6 +31,7 @@ import { last } from 'lodash'
 import ListCompact from './components/list-compact'
 import ListNormal from './components/list-normal'
 import ListGallery from './components/list-gallery'
+import setMeta from '@/util/setMeta'
 const LIMIT = 5
 export default {
   components: { ListCompact, ListNormal, ListGallery },
@@ -50,6 +51,10 @@ export default {
   computed: {
     fireUser () {
       return this.$store.state.fireUser
+    },
+    getCategory () {
+      if (!this.category) return '전체'
+      return this.category
     }
   },
   watch: {
@@ -76,6 +81,7 @@ export default {
           item.id = doc.id
           item.createdAt = item.createdAt.toDate()
           item.updatedAt = item.updatedAt.toDate()
+          item.overlay = false
           this.items.push(item)
         } else {
           if (findItem.summary !== item.summary) {
@@ -128,6 +134,11 @@ export default {
           return
         }
         this.snapshotToItems(sn)
+        setMeta({
+          title: this.board.title + ' ' + this.getCategory + ' 목록',
+          description: this.board.description.substr(0, 80),
+          image: '/logo.png'
+        })
       })
     },
     async more () {

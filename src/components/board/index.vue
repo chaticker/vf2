@@ -173,6 +173,7 @@ import { last } from 'lodash'
 import DisplayTime from '@/components/display-time'
 import DisplayUser from '@/components/display-user'
 import newCheck from '@/util/newCheck'
+import setMeta from '@/util/setMeta'
 const LIMIT = 5
 export default {
   components: { DisplayTime, DisplayUser },
@@ -225,6 +226,11 @@ export default {
       })
     },
     subscribe () {
+      setMeta({
+        title: '게시판 전체 목록',
+        description: '게시판 전체 목록입니다',
+        image: '/logo.png'
+      })
       this.ref = this.$firebase.firestore()
         .collection('boards')
         .orderBy(this.order, this.sort).limit(LIMIT)
